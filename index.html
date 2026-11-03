@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}</style>
+<title>Eric Stawiski, Ph.D.</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Eric Stawiski, Ph.D. Translational bioinformatics and genomics executive in oncology cell therapy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a genome-browser page. Coordinate ruler + career "tracks" up top, then annotated feature sections down a single 1100px column. */
+:root {
+  --bg: #f4f6f7;
+  --surface: #ffffff;
+  --ink: #0f1d2a;
+  --muted: #566573;
+  --line: #d9e0e5;
+  --accent: #1f46c4;
+  --accent-soft: #e5ebfb;
+  --nt-a: #2a9d6f; --nt-c: #2f6fd6; --nt-g: #d69a1e; --nt-t: #d1495b;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c141c; --surface: #121d28; --ink: #e6edf2; --muted: #93a3b1; --line: #24323f;
+    --accent: #8aa6ff; --accent-soft: #1a2747;
+    --nt-a: #4cc795; --nt-c: #6c9cf0; --nt-g: #e8b54a; --nt-t: #ef7485;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c141c; --surface: #121d28; --ink: #e6edf2; --muted: #93a3b1; --line: #24323f;
+  --accent: #8aa6ff; --accent-soft: #1a2747;
+  --nt-a: #4cc795; --nt-c: #6c9cf0; --nt-g: #e8b54a; --nt-t: #ef7485;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--body); font-size: 16px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+.wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.mono { font-family: var(--mono); }
+.label {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+}
+
+/* Top bar */
+.topbar { border-bottom: 1px solid var(--line); }
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; flex-wrap: wrap; }
+.topbar nav { display: flex; gap: 20px; flex-wrap: wrap; }
+.topbar nav a { color: var(--muted); text-decoration: none; font-size: 14px; }
+.topbar nav a:hover { color: var(--ink); }
+.locus { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.locus b { color: var(--ink); font-weight: 500; }
+
+/* Hero */
+.hero .wrap { padding-block: 64px 40px; display: grid; gap: 28px; }
+.hero h1 {
+  font-family: var(--display); font-weight: 800; font-size: clamp(44px, 8vw, 92px);
+  line-height: .95; letter-spacing: -.03em; margin: 0; text-wrap: balance;
+}
+.hero h1 .phd { font-weight: 400; color: var(--muted); font-size: .42em; letter-spacing: -.01em; }
+.hero .role { font-family: var(--display); font-weight: 600; font-size: clamp(20px, 2.6vw, 28px); line-height: 1.25; margin: 0; max-width: 30ch; text-wrap: balance; }
+.hero .lede { max-width: 64ch; color: var(--muted); font-size: 17px; margin: 0; }
+.hero .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 999px;
+  font: 500 15px var(--body); text-decoration: none; cursor: pointer; border: 1px solid var(--line);
+  background: var(--surface); color: var(--ink);
+}
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.btn:hover { border-color: var(--accent); }
+
+/* Sequence strip */
+.seq { margin-top: 8px; }
+.seq canvas { display: block; width: 100%; height: 44px; }
+.seq .ticks { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+/* Stats */
+.stats { border-block: 1px solid var(--line); background: var(--surface); }
+.stats .wrap { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); padding-block: 0; }
+.stat { padding: 26px 20px 26px 0; display: grid; gap: 4px; align-content: start; }
+.stat + .stat { padding-left: 20px; border-left: 1px solid var(--line); }
+.stat .n { font-family: var(--display); font-weight: 800; font-size: clamp(32px, 4vw, 44px); line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.stat .d { color: var(--muted); font-size: 14px; line-height: 1.4; }
+
+/* Sections */
+section.block .wrap { padding-block: 72px 0; }
+.sec-head { display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 32px; align-items: baseline; margin-bottom: 28px; }
+.sec-head h2 { font-family: var(--display); font-weight: 800; font-size: clamp(28px, 3.4vw, 38px); letter-spacing: -.02em; line-height: 1.1; margin: 0; text-wrap: balance; }
+.indent { margin-left: 252px; }
+
+/* Focus areas */
+.focus { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.focus article { background: var(--surface); padding: 24px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.focus h3 { font-family: var(--display); font-weight: 600; font-size: 20px; margin: 0; line-height: 1.25; }
+.focus p { margin: 0; color: var(--muted); font-size: 15px; }
+.focus .tag { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+
+/* Career tracks (genome browser) */
+.browser { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 20px 16px; overflow-x: auto; }
+.browser-inner { min-width: 640px; }
+.ruler { position: relative; height: 26px; border-bottom: 1px solid var(--line); margin-left: 150px; }
+.ruler span { position: absolute; bottom: 4px; transform: translateX(-50%); font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.ruler span::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 1px; height: 5px; background: var(--muted); }
+.track { display: grid; grid-template-columns: 150px minmax(0,1fr); align-items: center; height: 38px; border-bottom: 1px dashed var(--line); }
+.track:last-child { border-bottom: 0; }
+.track .name { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 10px; }
+.lane { position: relative; height: 100%; }
+.feat { position: absolute; top: 10px; height: 18px; border-radius: 3px; background: var(--accent); }
+.feat.alt { background: color-mix(in srgb, var(--accent) 45%, var(--surface)); }
+.feat i { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); font: 500 11px var(--mono); color: var(--bg); font-style: normal; white-space: nowrap; }
+.feat.alt i { color: var(--ink); }
+.browser .legend { display: flex; gap: 18px; margin-top: 12px; margin-left: 150px; font-family: var(--mono); font-size: 11px; color: var(--muted); flex-wrap: wrap; }
+.legend .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 6px; background: var(--accent); }
+.legend .sw.alt { background: color-mix(in srgb, var(--accent) 45%, var(--surface)); }
+
+/* Experience list */
+.roles { display: grid; gap: 0; margin-top: 36px; }
+.role-item { display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 32px; padding-block: 32px; border-top: 1px solid var(--line); }
+.role-meta { display: grid; gap: 6px; align-content: start; }
+.role-meta .co { font-family: var(--display); font-weight: 800; font-size: 22px; line-height: 1.15; }
+.role-meta .dates { font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.role-body { min-width: 0; }
+.role-body h3 { margin: 0 0 4px; font-size: 18px; font-weight: 600; }
+.role-body .prev { font-size: 14px; color: var(--muted); margin: 0 0 10px; }
+.role-body .ctx { margin: 0 0 14px; color: var(--muted); font-style: italic; }
+.role-body ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; max-width: 70ch; }
+.role-body li::marker { color: var(--accent); }
+
+/* Expertise */
+.chips-group { display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 32px; padding-block: 18px; border-top: 1px solid var(--line); }
+.chips-group:first-child { border-top: 0; }
+.chips-group h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.chip { font-size: 13.5px; padding: 5px 11px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); line-height: 1.35; }
+
+/* Publications */
+.pubs { list-style: none; margin: 0; padding: 0; display: grid; }
+.pub { display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 32px; padding-block: 20px; border-top: 1px solid var(--line); }
+.pub .venue { display: grid; gap: 2px; align-content: start; }
+.pub .journal { font-family: var(--display); font-weight: 600; font-size: 18px; }
+.pub .yr { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.pub .t { font-weight: 500; margin: 0 0 4px; }
+.pub .t a { color: var(--ink); text-decoration-color: var(--line); }
+.pub .t a:hover { text-decoration-color: var(--accent); }
+.pub .au { margin: 0; color: var(--muted); font-size: 14px; }
+.pub .role-tag { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 1px 7px; border: 1px solid var(--line); border-radius: 4px; margin-left: 6px; color: var(--muted); vertical-align: 1px; }
+.pubmed-card { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 20px 24px; border-radius: 14px; background: var(--accent-soft); margin-bottom: 8px; }
+.pubmed-card p { margin: 0; max-width: 56ch; }
+
+.talks { list-style: none; margin: 0; padding: 0; }
+.talks li { display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 32px; padding-block: 14px; border-top: 1px solid var(--line); }
+.talks .when { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.talks .when b { color: var(--ink); font-weight: 500; }
+
+/* Education */
+.edu { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 20px; }
+.edu div { padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); min-width: 0; }
+.edu h3 { margin: 0 0 4px; font-family: var(--display); font-weight: 600; font-size: 20px; }
+.edu p { margin: 0; color: var(--muted); font-size: 15px; }
+
+/* Contact */
+.contact { margin-top: 88px; background: var(--ink); color: var(--bg); }
+.contact .wrap { padding-block: 64px; display: grid; gap: 20px; }
+.contact h2 { font-family: var(--display); font-weight: 800; font-size: clamp(30px, 4.6vw, 52px); letter-spacing: -.02em; line-height: 1.05; margin: 0; max-width: 20ch; text-wrap: balance; }
+.contact p { margin: 0; max-width: 60ch; opacity: .8; }
+.contact .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.email { font-family: var(--mono); font-size: 18px; padding: 10px 16px; border: 1px solid color-mix(in srgb, var(--bg) 30%, transparent); border-radius: 999px; user-select: all; }
+.contact .btn { background: var(--bg); color: var(--ink); border-color: var(--bg); }
+.contact .btn.ghost { background: transparent; color: var(--bg); border-color: color-mix(in srgb, var(--bg) 30%, transparent); }
+.copied { font-family: var(--mono); font-size: 13px; opacity: .8; }
+footer .wrap { padding-block: 22px; font-family: var(--mono); font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+.poster-link { font-size: 14px; white-space: nowrap; margin-left: 4px; }
+
+/* Posters view */
+.pv-hero .wrap { padding-block: 48px 32px; display: grid; gap: 14px; }
+.pv-hero h1 { font-family: var(--display); font-weight: 800; font-size: clamp(38px, 6vw, 68px); line-height: 1; letter-spacing: -.03em; margin: 0; }
+.pv-hero .lede { max-width: 64ch; color: var(--muted); margin: 0; font-size: 17px; }
+.back { font-size: 14px; text-decoration: none; }
+.posters { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 28px; padding-bottom: 72px; }
+.poster { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+.poster .thumb { display: block; padding: 0; border: 0; border-bottom: 1px solid var(--line); background: #fff; cursor: zoom-in; width: 100%; }
+.poster .thumb img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; object-position: top; }
+.poster .body { padding: 20px 22px 22px; display: grid; gap: 10px; align-content: start; }
+.poster .meta { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.poster .meta b { color: var(--accent); font-weight: 500; }
+.poster h2 { font-family: var(--display); font-weight: 600; font-size: 20px; line-height: 1.25; margin: 0; text-wrap: balance; }
+.poster .au { margin: 0; font-size: 14px; color: var(--muted); }
+.poster .find { margin: 0; font-size: 15px; padding-left: 12px; border-left: 2px solid var(--accent); }
+.poster .acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+.poster .acts .btn { padding: 8px 14px; font-size: 14px; }
+
+.lightbox { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: grid; grid-template-rows: auto minmax(0,1fr); }
+.lb-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid var(--line);
+  padding-top: calc(12px + env(safe-area-inset-top, 0px)); padding-bottom: 12px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.lb-title { font-weight: 600; min-width: 0; }
+.lb-actions { display: flex; gap: 8px; }
+.lb-scroll { overflow: auto; background: #fff; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.lb-scroll img { display: block; width: 2400px; max-width: none; }
+.lb-fit .lb-scroll img { width: 100%; }
+
+@media (max-width: 860px) {
+  .posters { grid-template-columns: minmax(0,1fr); }
+  .stats .wrap { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .stat:nth-child(3) { padding-left: 0; border-left: 0; }
+  .stat:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .sec-head, .role-item, .chips-group, .pub, .talks li { grid-template-columns: minmax(0,1fr); gap: 10px; }
+  .indent { margin-left: 0; }
+  .focus, .edu { grid-template-columns: minmax(0,1fr); }
+  .topbar nav { display: none; }
+}
+@media (max-width: 480px) {
+  .stats .wrap { grid-template-columns: minmax(0,1fr); }
+  .stat, .stat + .stat { padding-left: 0; border-left: 0; }
+  .stat + .stat { border-top: 1px solid var(--line); }
+  .email { font-size: 15px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .feat { transform-origin: left; animation: grow .9s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes grow { from { transform: scaleX(.02); } to { transform: scaleX(1); } }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <span class="locus"><b>Stawiski E</b> · San Francisco, CA</span>
+    <nav aria-label="Sections">
+      <a href="#focus">Focus</a>
+      <a href="#experience">Experience</a>
+      <a href="#expertise">Expertise</a>
+      <a href="#publications">Publications</a>
+      <a href="#posters" class="nav-posters">Posters</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="home">
+  <section class="hero">
+    <div class="wrap">
+      <span class="label">Translational Bioinformatics &amp; Genomics · Oncology Therapy</span>
+      <h1>Eric Stawiski <span class="phd">Ph.D.</span></h1>
+      <p class="role">Turning multi-omics and clinical biomarker data into decisions for oncology cell therapy.</p>
+      <p class="lede">Bioinformatics and translational science leader with 20+ years in genomics and oncology drug development across biotech, diagnostics and large pharma. Currently Vice President, Translational Bioinformatics &amp; Genomics at Caribou Biosciences, leading translational analysis across LBCL, MM and AML clinical programs.</p>
+      <div class="cta">
+        <a class="btn primary" href="#contact">Get in touch</a>
+        <a class="btn" href="https://pubmed.ncbi.nlm.nih.gov/?term=Stawiski+E%5BAuthor%5D&amp;sort=date" target="_blank" rel="noopener">Publications on PubMed ↗</a>
+        <a class="btn" href="https://www.linkedin.com/in/stawiski/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+      <div class="seq" aria-hidden="true">
+        <canvas id="reads"></canvas>
+        <div class="ticks"><span>chr · career</span><span>2005</span><span>2010</span><span>2018</span><span>2022</span><span>today</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats" aria-label="Highlights">
+    <div class="wrap">
+      <div class="stat"><span class="n">20+</span><span class="d">years in genomics and oncology drug development</span></div>
+      <div class="stat"><span class="n">50+</span><span class="d">peer-reviewed publications, incl. co-first author in <i>Nature</i> and <i>Nature Genetics</i></span></div>
+      <div class="stat"><span class="n">4</span><span class="d">oncology clinical programs with GxP/GAMP 5-validated patient-screening software</span></div>
+      <div class="stat"><span class="n">23%</span><span class="d">improvement in neoantigen prediction over the state of the art (AACR 2022)</span></div>
+    </div>
+  </section>
+
+  <section class="block" id="focus">
+    <div class="wrap">
+      <div class="sec-head"><span class="label">What I do</span><h2>From patient data to clinical decisions</h2></div>
+      <div class="focus indent">
+        <article>
+          <span class="tag">Translational analysis</span>
+          <h3>Insight across clinical programs</h3>
+          <p>Lead translational analysis across oncology programs in solid tumor, LBCL, MM and AML, integrating ctDNA, PK/PD, cytokines, ADA and flow cytometry into findings that inform clinical development and manufacturing.</p>
+        </article>
+        <article>
+          <span class="tag">Validated software</span>
+          <h3>Patient screening and product assignment</h3>
+          <p>Turned translational discoveries into GxP/GAMP 5-validated patient-screening and product-assignment systems, including machine-learning components, for four oncology clinical programs.</p>
+        </article>
+        <article>
+          <span class="tag">Genomics</span>
+          <h3>Single-cell, CRISPR and HLA</h3>
+          <p>Oversee single-cell genomics (lab and analysis), CRISPR on/off-target analysis used in regulatory filings and product-release assays, and HLA genomics.</p>
+        </article>
+        <article>
+          <span class="tag">Leadership &amp; AI</span>
+          <h3>Teams, regulators and enterprise AI</h3>
+          <p>Senior leadership team member, FDA-facing subject matter expert, founder of Caribou's AI committee, and leader of bioinformatics organizations of up to 19 across the US and India.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="experience">
+    <div class="wrap">
+      <div class="sec-head"><span class="label">Experience</span><h2>Two decades across biotech, diagnostics and pharma</h2></div>
+
+      <div class="browser" role="img" aria-label="Career timeline: Monogram Biosciences 2005 to 2010, Genentech 2010 to 2018, MedGenome 2018 to 2020, PACT Pharma 2020 to 2022, Caribou Biosciences 2022 to present.">
+        <div class="browser-inner">
+          <div class="ruler" id="ruler"></div>
+          <div id="tracks"></div>
+          <div class="legend"><span><span class="sw"></span>Vice President</span><span><span class="sw alt"></span>Scientist &amp; group leader</span></div>
+        </div>
+      </div>
+
+      <div class="roles">
+        <div class="role-item">
+          <div class="role-meta"><span class="co">Caribou Biosciences</span><span class="dates">11/2022 – present</span></div>
+          <div class="role-body">
+            <h3>Vice President, Translational Bioinformatics &amp; Genomics</h3>
+            <p class="prev">Since 9/2025 · previously Vice President, Bioinformatics (11/2022 – 9/2025)</p>
+            <p class="ctx">CRISPR genome-edited allogeneic cell therapies.</p>
+            <ul>
+              <li>Lead translational data analysis across LBCL, MM and AML clinical programs, integrating multi-omics and clinical biomarker data with machine-learning predictions of patient response.</li>
+              <li>Led development of validated (GxP, GAMP 5) pipelines for patient screening and optimal product assignment, in use across 3 oncology clinical programs.</li>
+              <li>Created AURORA<sub>CB</sub>, a clinical and translational data ecosystem with automated QC, dashboards, self-service pipelines and reporting.</li>
+              <li>Built CRISPR on- and off-target genomics pipelines used in regulatory filings and validated product-release assays.</li>
+              <li>Represent bioinformatics and translational data with FDA; member of the Senior Leadership Team; founded the company AI committee and lead the enterprise AI rollout.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="role-item">
+          <div class="role-meta"><span class="co">PACT Pharma</span><span class="dates">09/2020 – 10/2022</span></div>
+          <div class="role-body">
+            <h3>Vice President, Bioinformatics</h3>
+            <p class="ctx">Personalized adoptive neoTCR-T cell therapy for solid tumors.</p>
+            <ul>
+              <li>Directed bioinformatics strategy and grew the team to 9; member of Senior Management and BD scientific teams.</li>
+              <li>Deployed clinical-grade cloud pipelines supporting Phase I trials, from somatic mutation profiling to HLA LOH and single-cell TCR.</li>
+              <li>Applied machine learning to improve neoantigen prediction success by 23% over the state of the art.</li>
+              <li>Chaired the core team for the lead program, overseeing IND creation, safety profiling and TCR discovery.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="role-item">
+          <div class="role-meta"><span class="co">MedGenome</span><span class="dates">08/2018 – 09/2020</span></div>
+          <div class="role-body">
+            <h3>Vice President, Bioinformatics</h3>
+            <p class="ctx">Genomics diagnostics and research services company (India and Foster City, CA).</p>
+            <ul>
+              <li>Led all bioinformatics for R&amp;D, CAP-accredited diagnostics and services; built the US team from scratch and reported to the CEO.</li>
+              <li>Automation and data organization produced a 3-fold increase in NGS projects and analytics.</li>
+              <li>Lead designer of the first South Asian-specific genotyping array.</li>
+              <li>Key member of the scientific BD team in a successful $55M Series D raise.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="role-item">
+          <div class="role-meta"><span class="co">Genentech</span><span class="dates">07/2010 – 07/2018</span></div>
+          <div class="role-body">
+            <h3>NGS Bioinformatics Group Leader &amp; Senior Scientist</h3>
+            <p class="prev">01/2014 – 07/2018 · previously Computational Biologist III (07/2010 – 01/2014)</p>
+            <ul>
+              <li>Led the NGS lab's bioinformatics group, overseeing a custom LIMS for more than 10,000 samples a year.</li>
+              <li>Led or guided cancer genomics research producing co-first-author papers in <i>Nature</i> and <i>Nature Genetics</i>.</li>
+              <li>Perennial Key Contributor Award winner (top 10% of performers).</li>
+            </ul>
+          </div>
+        </div>
+        <div class="role-item">
+          <div class="role-meta"><span class="co">Monogram Biosciences</span><span class="dates">08/2005 – 06/2010</span></div>
+          <div class="role-body">
+            <h3>Principal Bioinformatics Scientist</h3>
+            <p class="prev">06/2009 – 06/2010 · previously Senior Bioinformatics Scientist (08/2005 – 06/2009)</p>
+            <ul>
+              <li>Lead designer of CLIA-validated bioinformatics genotyping systems processing more than 2,000 samples a month.</li>
+              <li>Developed algorithms defining HIV phenotype/genotype relationships; co-author on 4 funded NIH SBIR grants.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="expertise">
+    <div class="wrap">
+      <div class="sec-head"><span class="label">Expertise</span><h2>Core capabilities</h2></div>
+      <div>
+        <div class="chips-group"><h3>Translational &amp; clinical</h3><div class="chips"><span class="chip">Biomarker strategy</span><span class="chip">Patient screening &amp; product assignment</span><span class="chip">ctDNA</span><span class="chip">PK/PD</span><span class="chip">Cytokines</span><span class="chip">ADA</span><span class="chip">Flow cytometry</span><span class="chip">Companion diagnostics</span></div></div>
+        <div class="chips-group"><h3>Genomics</h3><div class="chips"><span class="chip">WGS/WES</span><span class="chip">RNA-seq</span><span class="chip">Single-cell (CITE-seq, TCR/BCR)</span><span class="chip">ATAC-seq</span><span class="chip">Long-read</span><span class="chip">CRISPR on/off-target</span><span class="chip">HLA typing &amp; LOH</span><span class="chip">Neoantigen</span><span class="chip">TME</span></div></div>
+        <div class="chips-group"><h3>Data science &amp; AI</h3><div class="chips"><span class="chip">ML for response, neoantigen &amp; manufacturing prediction</span><span class="chip">Enterprise AI rollout</span><span class="chip">AI-assisted app development</span></div></div>
+        <div class="chips-group"><h3>Regulatory</h3><div class="chips"><span class="chip">FDA Type B &amp; End-of-Phase 1 meetings</span><span class="chip">IND writing</span><span class="chip">IMPD/CTA</span><span class="chip">Clinical hold responses</span><span class="chip">CRISPR genotoxicity sections</span></div></div>
+        <div class="chips-group"><h3>Quality &amp; platforms</h3><div class="chips"><span class="chip">GxP</span><span class="chip">GAMP 5</span><span class="chip">CLIA</span><span class="chip">CAP</span><span class="chip">Nextflow</span><span class="chip">Seqera Platform</span><span class="chip">Docker</span><span class="chip">AWS</span><span class="chip">LIMS</span></div></div>
+        <div class="chips-group"><h3>Programming</h3><div class="chips"><span class="chip">R</span><span class="chip">Perl</span><span class="chip">C/C++</span><span class="chip">Java</span><span class="chip">JavaScript</span><span class="chip">SQL</span><span class="chip">MongoDB</span><span class="chip">Unix/Linux shell</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="publications">
+    <div class="wrap">
+      <div class="sec-head"><span class="label">Publications</span><h2>Selected papers</h2></div>
+      <div class="pubmed-card">
+        <p><b>50+ peer-reviewed publications</b> in cancer and population genomics. The full, up-to-date list is on PubMed.</p>
+        <a class="btn primary" href="https://pubmed.ncbi.nlm.nih.gov/?term=Stawiski+E%5BAuthor%5D&amp;sort=date" target="_blank" rel="noopener">View all on PubMed ↗</a>
+      </div>
+      <ol class="pubs" id="pubs"></ol>
+
+      <div class="sec-head" style="margin-top:56px"><span class="label">Talks</span><h2>Recent presentations</h2></div>
+      <ul class="talks">
+        <li><span class="when"><b>SITC</b> · Nov 2022</span><span>Retrospective tumor microenvironment analysis from a personalized neoTCR-T cell therapy clinical trial and its potential applications for off-the-shelf HPV TCRs. <a class="poster-link" href="#posters">View poster</a></span></li>
+        <li><span class="when"><b>AACR</b> · Apr 2022</span><span>Correlates of peptide-HLA manufacturing success, TCR capture and neoTCR trafficking from patients using the PACTImmune Database. <a class="poster-link" href="#posters">View poster</a></span></li>
+        <li><span class="when"><b>AACR</b> · Apr 2022</span><span>Uncovering HLA loss of heterozygosity and allelic imbalance in cancer for the improvement of personalized neoTCR immunotherapy with PACT-ESCAPE. <a class="poster-link" href="#posters">View poster</a></span></li>
+        <li><span class="when"><b>SITC</b> · Nov 2021</span><span>Machine learning significantly improves neoantigen-HLA predictions utilizing &gt;26,000 data points from the PACTImmune Database. <a class="poster-link" href="#posters">View poster</a></span></li>
+        <li><span class="when"><b>AACR</b> · Apr 2021</span><span>Tumor neoantigen profiling with validated patient-specific neoTCR characterization to improve neoepitope prediction. <a class="poster-link" href="#posters">View poster</a></span></li>
+      </ul>
+      <div class="pubmed-card" style="margin-top:24px">
+        <p><b>Conference posters.</b> Browse full-resolution posters from SITC and AACR on neoantigen prediction, HLA loss and the tumor microenvironment.</p>
+        <a class="btn primary" href="#posters">See the posters →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="education">
+    <div class="wrap">
+      <div class="sec-head"><span class="label">Education</span><h2>Training</h2></div>
+      <div class="edu indent">
+        <div><h3>Ph.D., Molecular, Cellular and Developmental Biology</h3><p>University of California, Santa Cruz. Dissertation: Computational Prediction of Protein Function Based on Structure.</p></div>
+        <div><h3>B.S., Biochemistry and Cell Biology</h3><p>University of California, San Diego.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <span class="label" style="color:inherit;opacity:.7">Contact</span>
+      <h2>Let's talk translational data, genomics and cell therapy.</h2>
+      <p>Open to conversations about leadership roles, advisory work, collaborations and speaking. Based in San Francisco, CA.</p>
+      <div class="row">
+        <a class="btn" href="https://www.linkedin.com/in/stawiski/" target="_blank" rel="noopener">Connect on LinkedIn ↗</a>
+        <a class="btn ghost" href="https://pubmed.ncbi.nlm.nih.gov/?term=Stawiski+E%5BAuthor%5D&amp;sort=date" target="_blank" rel="noopener">PubMed ↗</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<main id="posters-view" hidden>
+  <section class="pv-hero">
+    <div class="wrap">
+      <a class="back" href="#top">← Back to profile</a>
+      <span class="label">Posters · SITC &amp; AACR</span>
+      <h1>Conference posters</h1>
+      <p class="lede">Posters from the personalized neoTCR-T cell therapy program at PACT Pharma (NCT03970382), with Eric Stawiski as first or senior author. Select a poster to view it at full size, or open the original PDF.</p>
+    </div>
+  </section>
+  <section>
+    <div class="wrap">
+      <div class="posters" id="poster-grid"></div>
+    </div>
+  </section>
+</main>
+
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Poster at full size">
+  <div class="lb-bar">
+    <span class="lb-title" id="lb-title"></span>
+    <div class="lb-actions">
+      <a class="btn" id="lb-pdf" href="#" target="_blank" rel="noopener">Open PDF ↗</a>
+      <button class="btn" type="button" id="lb-close">Close</button>
+    </div>
+  </div>
+  <div class="lb-scroll"><img id="lb-img" alt=""></div>
+</div>
+
+<footer><div class="wrap"><span>© Eric Stawiski</span><span>San Francisco, CA</span></div></footer>
+
+<script>
+(function () {
+  // Career tracks
+  var START = 2005, END = 2026.9;
+  var roles = [
+    { co: "Caribou Biosciences", s: 2022.85, e: END, t: "VP", alt: false },
+    { co: "PACT Pharma", s: 2020.7, e: 2022.8, t: "VP", alt: false },
+    { co: "MedGenome", s: 2018.6, e: 2020.7, t: "VP", alt: false },
+    { co: "Genentech", s: 2010.5, e: 2018.55, t: "Group leader", alt: true },
+    { co: "Monogram Biosciences", s: 2005.6, e: 2010.45, t: "Scientist", alt: true }
+  ];
+  var pct = function (y) { return ((y - START) / (END - START) * 100).toFixed(2) + "%"; };
+  var ruler = document.getElementById("ruler");
+  [2005, 2010, 2015, 2020, 2025].forEach(function (y) {
+    var s = document.createElement("span"); s.style.left = pct(y); s.textContent = y; ruler.appendChild(s);
+  });
+  var tracks = document.getElementById("tracks");
+  roles.forEach(function (r, i) {
+    var row = document.createElement("div"); row.className = "track";
+    row.innerHTML = '<span class="name">' + r.co + '</span><div class="lane"><div class="feat' + (r.alt ? " alt" : "") + '"><i>' + r.t + '</i></div></div>';
+    var f = row.querySelector(".feat");
+    f.style.left = pct(r.s); f.style.width = "calc(" + pct(r.e) + " - " + pct(r.s) + ")";
+    f.style.animationDelay = (0.1 + (roles.length - i) * 0.08) + "s";
+    tracks.appendChild(row);
+  });
+
+  // Publications
+  var pubs = [
+    ["Nature", "2023", "Non-viral precision T cell receptor replacement for personalized adoptive cell therapy in patients with refractory solid cancers.", "Foy SP, … Stawiski E, … Mandl SJ. 615:687-696.", ""],
+    ["Nature", "2019", "The GenomeAsia 100K Project enables genetic discoveries across Asia.", "Wall JD*, Stawiski EW*, GenomeAsia100K Consortium. 576:106-111.", "co-first"],
+    ["Nature", "2012", "Recurrent R-spondin fusions in colon cancer.", "Seshagiri S*, Stawiski EW*, Durinck S*, Modrusan Z*, … de Sauvage FJ. 488:660-4.", "co-first"],
+    ["Nature Genetics", "2016", "Comprehensive genomic analysis of malignant pleural mesothelioma identifies recurrent mutations, gene fusions and splicing alterations.", "Bueno R*§, Stawiski EW*§, Goldstein LD*, Durinck S*, … Seshagiri S§.", "co-first · co-corresponding"],
+    ["Nature Genetics", "2015", "Spectrum of diverse genomic alterations define non-clear cell renal carcinoma subtypes.", "Durinck S*, Stawiski EW*, Pavía-Jiménez A*, Modrusan Z*, … Seshagiri S. 47:13-21.", "co-first"],
+    ["Nature Genetics", "2012", "Comprehensive genomic analysis identifies SOX2 as a frequently amplified gene in small-cell lung cancer.", "Rudin CM*, Durinck S*, Stawiski EW*, … Seshagiri S. 44:1111-6.", "co-first"],
+    ["Nature Communications", "2020", "Integrated genomic analysis reveals mutated ELF3 as a potential gallbladder cancer vaccine candidate.", "Pandey A*§, Stawiski EW*§, Durinck S*, … Seshagiri S§. 11:4225.", "co-first · co-corresponding"],
+    ["Cancer Cell", "2018", "Actionable activating oncogenic ERBB2/HER2 transmembrane and juxtamembrane domain mutations.", "Pahuja KB, … Stawiski EW, … Seshagiri S. 34:792-806.", ""]
+  ];
+  var ol = document.getElementById("pubs");
+  pubs.forEach(function (p) {
+    var li = document.createElement("li"); li.className = "pub";
+    var q = encodeURIComponent(p[2].replace(/\.$/, "") + "[Title]");
+    li.innerHTML = '<div class="venue"><span class="journal">' + p[0] + '</span><span class="yr">' + p[1] + '</span></div>' +
+      '<div style="min-width:0"><p class="t"><a href="https://pubmed.ncbi.nlm.nih.gov/?term=' + q + '" target="_blank" rel="noopener">' + p[2] + '</a>' +
+      (p[4] ? '<span class="role-tag">' + p[4] + '</span>' : '') + '</p><p class="au">' + p[3] + '</p></div>';
+    ol.appendChild(li);
+  });
+
+  // Posters
+  var posters = [
+    { img: "posters/SITC2022_TME_Stawiski_712.jpg", pdf: "posters/SITC2022_TME_Stawiski_712.pdf",
+      venue: "SITC 2022", no: "Abstract 712",
+      title: "Retrospective tumor microenvironment analysis from a personalized neoTCR-T cell therapy clinical trial and its potential applications for off-the-shelf HPV TCR T cell therapy",
+      au: "Smith C, Bhardwaj V, Borrman T, Pan Z, Mandl SJ, <b>Stawiski E</b>",
+      find: "A pan-cancer TME subtype classifier showed dosed patients' tumors were mostly unfavorable for immunotherapy, while HPV+ cancers are enriched for responsive subtypes." },
+    { img: "posters/AACR2022_pHLA_manufacturing_Stawiski_5167.jpg", pdf: "posters/AACR2022_pHLA_manufacturing_Stawiski_5167.pdf",
+      venue: "AACR 2022", no: "Poster 5167", role: "First author",
+      title: "Correlates of peptide-HLA manufacturing success, TCR capture and neoTCR trafficking from patients using the PACTImmune Database",
+      au: "<b>Stawiski E</b>, Bhardwaj V, Mathur J, … Rao A, Mandl S",
+      find: "Machine learning on the PACTImmune Database raised peptide-HLA (comPACT) manufacturing success by 22% on average in prospective validation, and flagged which samples were most likely to yield multiple neoTCRs." },
+    { img: "posters/AACR2022_PACT-ESCAPE_Smith_2708.jpg", pdf: "posters/AACR2022_PACT-ESCAPE_Smith_2708.pdf",
+      venue: "AACR 2022", no: "Poster 2708",
+      title: "Uncovering HLA loss of heterozygosity in cancer for the improvement of personalized neoTCR immunotherapy with PACT-ESCAPE",
+      au: "Smith C, Ma Y, Campbell K, Pan Z, <b>Stawiski E</b>",
+      find: "HLA LOH was found in 19.6% of 122 trial patients across 8 tumor types, with 43 of 44 loci concordant against the DASH classifier." },
+    { img: "posters/SITC2021_ML_neoantigen_Bhardwaj_820.jpg", pdf: "posters/SITC2021_ML_neoantigen_Bhardwaj_820.pdf",
+      venue: "SITC 2021", no: "Poster 820",
+      title: "Machine learning significantly improves neoantigen-HLA predictions utilizing >26,000 data points from the PACTImmune Database",
+      au: "Bhardwaj V, Momin A, Johnston J, … Kheterpal A, <b>Stawiski E</b>",
+      find: "In prospective validation, new ML models averaged a 22% higher success rate than netMHCpan4.1, with held-out AUROC of 0.75 to 0.92." },
+    { img: "posters/AACR2021_neoepitope_profiling_Pan_2177.jpg", pdf: "posters/AACR2021_neoepitope_profiling_Pan_2177.pdf",
+      venue: "AACR 2021", no: "Abstract 2177",
+      title: "Tumor neoantigen profiling with validated patient-specific neoTCR characterization to improve neoepitope prediction",
+      au: "Pan Z, Bhardwaj V, Dalmas O, … Mandl S, <b>Stawiski E</b>",
+      find: "The neoTCR discovery pipeline validated more than 200 neoTCRs across more than 30 HLA alleles; 3.2% (118/3,714) of neoE-HLA targets yielded a validated neoTCR." }
+  ];
+  var grid = document.getElementById("poster-grid");
+  var esc = function (s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); };
+  posters.forEach(function (p, i) {
+    var a = document.createElement("article"); a.className = "poster";
+    a.innerHTML = '<button class="thumb" type="button" data-i="' + i + '" aria-label="View poster full size"><img src="' + p.img + '" alt="Poster: ' + esc(p.title) + '" loading="lazy"></button>' +
+      '<div class="body"><div class="meta"><b>' + p.venue + '</b><span>' + p.no + '</span><span>' + (p.role || "Senior author") + '</span></div>' +
+      '<h2>' + esc(p.title) + '</h2><p class="au">' + p.au + '</p><p class="find">' + esc(p.find) + '</p>' +
+      '<div class="acts"><button class="btn primary" type="button" data-i="' + i + '">View full size</button>' +
+      '<a class="btn" href="' + p.pdf + '" target="_blank" rel="noopener">Open PDF ↗</a></div></div>';
+    grid.appendChild(a);
+  });
+  var lb = document.getElementById("lightbox"), lbImg = document.getElementById("lb-img"), lastFocus = null;
+  function openLb(i) {
+    var p = posters[i]; lastFocus = document.activeElement;
+    lbImg.src = p.img; lbImg.alt = "Poster: " + p.title;
+    document.getElementById("lb-title").textContent = p.venue + " · " + p.no;
+    document.getElementById("lb-pdf").href = p.pdf;
+    lb.classList.toggle("lb-fit", window.innerWidth > 2400);
+    lb.hidden = false; document.body.style.overflow = "hidden";
+    document.getElementById("lb-close").focus();
+  }
+  function closeLb() { lb.hidden = true; document.body.style.overflow = ""; if (lastFocus) lastFocus.focus(); }
+  grid.addEventListener("click", function (e) { var b = e.target.closest("[data-i]"); if (b) openLb(+b.dataset.i); });
+  document.getElementById("lb-close").addEventListener("click", closeLb);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !lb.hidden) closeLb(); });
+
+  // Views: #posters shows the posters page; anything else shows the profile
+  var home = document.getElementById("home"), pv = document.getElementById("posters-view");
+  function route() {
+    var h = location.hash.replace("#", "");
+    var showPosters = h === "posters";
+    var wasPosters = !pv.hidden;
+    pv.hidden = !showPosters; home.hidden = showPosters;
+    if (showPosters) { window.scrollTo(0, 0); return; }
+    var t = h && h !== "top" ? document.getElementById(h) : null;
+    if (t) t.scrollIntoView(); else if (wasPosters) window.scrollTo(0, 0);
+    draw();
+  }
+  window.addEventListener("hashchange", route);
+
+  // Sequencing-read strip (decorative)
+  var cv = document.getElementById("reads");
+  function draw() {
+    var css = getComputedStyle(document.documentElement);
+    var cols = ["--nt-a", "--nt-c", "--nt-g", "--nt-t"].map(function (v) { return css.getPropertyValue(v).trim(); });
+    var w = cv.clientWidth, h = cv.clientHeight, dpr = window.devicePixelRatio || 1;
+    cv.width = w * dpr; cv.height = h * dpr;
+    var ctx = cv.getContext("2d"); ctx.scale(dpr, dpr); ctx.clearRect(0, 0, w, h);
+    var seed = 7; var rnd = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    var rows = 4, rh = h / rows;
+    for (var r = 0; r < rows; r++) {
+      var x = rnd() * 30;
+      while (x < w) {
+        var len = 40 + rnd() * 140;
+        for (var b = 0; b < len && x + b < w; b += 4) {
+          ctx.fillStyle = cols[Math.floor(rnd() * 4)];
+          ctx.globalAlpha = 0.25 + 0.75 * ((x + b) / w);
+          ctx.fillRect(x + b, r * rh + 2, 3, rh - 5);
+        }
+        x += len + 6 + rnd() * 20;
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  route();
+  window.addEventListener("resize", draw);
+  if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", draw);
+})();
+</script>
+</body>
+</html>
